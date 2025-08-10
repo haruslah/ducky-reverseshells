@@ -9,7 +9,7 @@ This repo gathers practical Duckyscripts that automate reverse shell setups. Eac
 ## Important
 
 **Use only on machines you own or have permission to test.**  
-These scripts can disable security features and run remote code—use responsibly.
+These scripts can disable security features and run remote code—use responsibly.  
 And seriously, don’t go plugging this into your friend’s laptop 👀
 
 ## Repo Layout
