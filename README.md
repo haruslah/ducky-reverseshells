@@ -1,6 +1,7 @@
 # ducky-reverseshells
 
-A collection of Duckyscripts focused on reverse shells, mainly for Windows environments.
+A collection of Duckyscripts focused on reverse shells, mainly for Windows environments.  
+Linux and macOS scripts might come later—if motivation and time allow.
 
 ## What’s Inside
 
